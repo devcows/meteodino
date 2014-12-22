@@ -16,18 +16,9 @@ gem 'rake', '~> 0.9.6'
 #
 # $ rhc env set BUNDLE_WITHOUT="development test postgresql"
 #
-group :development, :test do
-  gem 'sqlite3'
-  gem 'minitest'
-  gem 'thor'
-end
-
 # Add support for the MySQL
-group :production, :mysql do
+group :production do
   gem 'mysql2'
-end
-
-group :production, :postgresql do
   gem 'pg'
 end
 
@@ -48,11 +39,29 @@ gem 'jquery-rails'
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
-# bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0',          group: :doc
+
+group :doc do
+  # bundle exec rake doc:rails generates the API under doc/api.
+  gem 'sdoc', '~> 0.4.0'
+end
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
+group :development, :test do
+  gem 'sqlite3'
+  gem 'minitest'
+  gem 'thor'
+
+  gem 'spring'
+  gem 'did_you_mean'
+  gem 'annotate'
+  gem 'rails-erd'
+
+  #profiling
+  gem 'bullet', '4.7.1'
+  gem 'ruby-prof', '0.14.2'
+end
+
+gem 'protected_attributes'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
