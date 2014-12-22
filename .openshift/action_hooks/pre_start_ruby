@@ -25,3 +25,20 @@ if ! [ "$(type -t set_env_var)" == "function" ]; then
     export RAILS_DB="mysql"
   fi
 fi
+
+#STOP Maintenance web.
+echo "Stopping maintenance web server."
+if [ -f $OPENSHIFT_DATA_DIR/maintenance.pid ];
+then
+
+  if ps -p `cat $OPENSHIFT_DATA_DIR/maintenance.pid` > /dev/null
+  then
+     echo "Maintenance web is running"
+     kill -9 `cat $OPENSHIFT_DATA_DIR/maintenance.pid`
+  else
+     echo "Maintenance web not running"
+  fi
+
+  rm $OPENSHIFT_DATA_DIR/maintenance.pid
+fi
+

@@ -12,3 +12,6 @@
 # prevent your application from stopping cleanly or starting at all.
 # Application start and stop is subject to different timeouts
 # throughout the system.
+echo "Starting maintenance web server."
+nohup python $OPENSHIFT_REPO_DIR/.openshift/maintenance/maintenance.py > $OPENSHIFT_DATA_DIR/nohup.out 2>&1 &
+echo $! > $OPENSHIFT_DATA_DIR/maintenance.pid
