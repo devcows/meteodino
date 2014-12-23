@@ -1,8 +1,34 @@
+#include <EtherCard.h>
 #include <dht11.h>
 
 dht11 DHT11;
 
-#define DHT11PIN 2
+//Digital pin 5
+#define DHT11PIN 5
+
+//DHT connection 
+//BUT TAKE CARE how to connect it : (Data, 5V, GND) when the bleu protection is in front of you.
+
+
+// ethernet interface mac address, must be unique on the LAN
+static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
+
+byte Ethernet::buffer[700];
+static uint32_t timer;
+
+// change to the page on that server
+char apiServer[] = "10.10.10.103:3000/api/v1/weather_stations/1/meteo_data";
+
+int totalCount = 0; 
+
+// set this to the number of milliseconds delay
+// this is 5 seconds
+#define delayMillis 5000UL
+
+unsigned long thisMillis = 0;
+unsigned long lastMillis = 0;
+
+Stash stash;
 
 //Celsius to Fahrenheit conversion
 double Fahrenheit(double celsius)
@@ -57,25 +83,71 @@ double dewPointFast(double celsius, double humidity)
 	return Td;
 }
 
-
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
+  Serial.println("Begin setup:");
+  
   Serial.println("DHT11 TEST PROGRAM ");
   Serial.print("LIBRARY VERSION: ");
   Serial.println(DHT11LIB_VERSION);
+  pinMode(DHT11PIN, INPUT);           // set pin to input
+  
+  
+  if (ether.begin(sizeof Ethernet::buffer, mymac, 10) == 0) 
+    Serial.println(F("Failed to access Ethernet controller"));
+  if (!ether.dhcpSetup())
+    Serial.println(F("DHCP failed"));
+
+  ether.printIp("IP:  ", ether.myip);
+  ether.printIp("GW:  ", ether.gwip);  
+  ether.printIp("DNS: ", ether.dnsip); 
+
+  Serial.println(F("Ready"));
   Serial.println();
 }
 
+static int sendToAPI (float humidity, float temperature, float dew_point) {
+  Serial.println("Sending meteo_datum...");
+  byte sd = stash.create();
+  
+  // insure params is big enough to hold your variables
+  char params[256];
+  sprintf(params,"{\"meteo_data\":{\"token\":\"test_token\",\"humidity\":\"%f\",\"temperature\":\"%f\",\"dew_point\":\"%f\"}}", humidity, temperature, dew_point);     
+
+  stash.print(params);
+  stash.save();
+  int stash_size = stash.size();
+
+  // Compose the http POST request, taking the headers below and appending
+  // previously created stash in the sd holder.
+  Stash::prepare(PSTR("POST http://$F/update HTTP/1.0" "\r\n"
+    "Host: 10.10.10.103" "\r\n"
+    "Content-Length: $D" "\r\n"
+    "\r\n"
+    "$H"),
+  apiServer, stash_size, sd);
+
+  // send the packet - this also releases all stash buffers once done
+  // Save the session ID so we can watch for it in the main loop.
+  return ether.tcpSend();
+}
+
+
 void loop()
 {
-  Serial.println("\n");
+  Serial.println("Loop\n");
 
   int chk = DHT11.read(DHT11PIN);
-
-  Serial.print("Read sensor: ");
-  switch (chk)
+ 
+  thisMillis = millis();
+  if(thisMillis - lastMillis > delayMillis)
   {
+    lastMillis = thisMillis;
+
+    Serial.print("Read sensor: ");
+    switch (chk)
+    {
     case DHTLIB_OK: 
 		Serial.println("OK"); 
 		break;
@@ -88,28 +160,32 @@ void loop()
     default: 
 		Serial.println("Unknown error"); 
 		break;
-  }
+    }
 
-  Serial.print("Humidity (%): ");
-  Serial.println((float)DHT11.humidity, 2);
+    float humidity = DHT11.humidity;
+    float temperature = DHT11.temperature;
+    float dew_point = dewPointFast(DHT11.temperature, DHT11.humidity);
 
-  Serial.print("Temperature (°C): ");
-  Serial.println((float)DHT11.temperature, 2);
+    Serial.print("Humidity (%): ");
+    Serial.println(humidity, 2);
 
-  Serial.print("Temperature (°F): ");
-  Serial.println(Fahrenheit(DHT11.temperature), 2);
+    Serial.print("Temperature (°C): ");
+    Serial.println(temperature, 2);
 
-  Serial.print("Temperature (°K): ");
-  Serial.println(Kelvin(DHT11.temperature), 2);
+    //Serial.print("Dew Point (°C): ");
+    //Serial.println(dewPoint(DHT11.temperature, DHT11.humidity));
 
-  Serial.print("Dew Point (°C): ");
-  Serial.println(dewPoint(DHT11.temperature, DHT11.humidity));
+    Serial.print("Dew PointFast (°C): ");
+    Serial.println(dew_point); 
+    sendToAPI(humidity, temperature, dew_point);
 
-  Serial.print("Dew PointFast (°C): ");
-  Serial.println(dewPointFast(DHT11.temperature, DHT11.humidity));
+    totalCount++;
+    Serial.println(totalCount,DEC);
+  }    
 
   delay(2000);
 }
-//
-// END OF FILE
-//
+
+
+
+
