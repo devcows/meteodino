@@ -61,6 +61,8 @@ group :development, :test do
   gem 'ruby-prof', '0.14.2'
 end
 
+gem 'activeadmin', :github => 'activeadmin'
+gem 'devise'
 gem 'protected_attributes'
 
 # Use ActiveModel has_secure_password
