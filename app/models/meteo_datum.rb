@@ -6,12 +6,13 @@
 #  weather_station_id :integer
 #  temperature        :float
 #  humidity           :float
+#  dew_point          :float
 #  created_at         :datetime
 #  updated_at         :datetime
 #
 
 class MeteoDatum < ActiveRecord::Base
-  attr_accessible :weather_station_id, :temperature, :humidity, :token
+  attr_accessible :weather_station_id, :temperature, :humidity, :dew_point, :token
   attr_accessor :token
 
   belongs_to :weather_station

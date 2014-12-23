@@ -4,6 +4,7 @@ class CreateMeteoData < ActiveRecord::Migration
       t.integer :weather_station_id
       t.float :temperature
       t.float :humidity
+      t.float :dew_point
 
       t.timestamps
     end

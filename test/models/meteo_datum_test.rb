@@ -6,6 +6,7 @@
 #  weather_station_id :integer
 #  temperature        :float
 #  humidity           :float
+#  dew_point          :float
 #  created_at         :datetime
 #  updated_at         :datetime
 #

@@ -35,6 +35,6 @@ class API::V1::MeteoDataController < ApiApplicationController
   end
 
   def meteodatum_params
-    params.require(:meteo_data).permit(:token, :temperature, :humidity)
+    params.require(:meteo_data).permit(:token, :temperature, :humidity, :dew_point)
   end
 end

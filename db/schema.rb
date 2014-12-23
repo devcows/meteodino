@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20141223084424) do
     t.integer  "weather_station_id"
     t.float    "temperature"
     t.float    "humidity"
+    t.float    "dew_point"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
