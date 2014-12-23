@@ -14,10 +14,26 @@ class API::V1::MeteoDataController < ApiApplicationController
     render 'api/v1/meteo_data/show', params: @meteo_datum
   end
 
+  # POST /meteo_data
+  # POST /meteo_data.json
+  def create
+    @meteo_datum = MeteoDatum.new(meteodatum_params)
+
+    if @meteo_datum.save
+      render json: @meteo_datum, status: :created, location: @meteo_datum
+    else
+      render json: @meteo_datum.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_meteo_datum
     @meteo_datum = MeteoDatum.find(params[:id])
+  end
+
+  def meteodatum_params
+    params.require(:meteo_data).permit(:weather_station_id, :temperature, :humidity)
   end
 end

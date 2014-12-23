@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: 'json'} do
     namespace :v1 do
       resources :weather_stations, only: [:index, :show] do
-        resources :meteo_data, only: [:index, :show]
+        resources :meteo_data, only: [:index, :create, :show]
       end
     end
   end
