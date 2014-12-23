@@ -18,9 +18,10 @@ class API::V1::MeteoDataController < ApiApplicationController
   # POST /meteo_data.json
   def create
     @meteo_datum = MeteoDatum.new(meteodatum_params)
+    @meteo_datum.weather_station_id = params[:weather_station_id]
 
     if @meteo_datum.save
-      render json: @meteo_datum, status: :created, location: @meteo_datum
+      render json: @meteo_datum, status: :created
     else
       render json: @meteo_datum.errors, status: :unprocessable_entity
     end
@@ -34,6 +35,6 @@ class API::V1::MeteoDataController < ApiApplicationController
   end
 
   def meteodatum_params
-    params.require(:meteo_data).permit(:weather_station_id, :temperature, :humidity)
+    params.require(:meteo_data).permit(:token, :temperature, :humidity)
   end
 end

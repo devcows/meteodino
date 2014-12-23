@@ -7,12 +7,12 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
-ws = WeatherStation.create(name: 'Arduino hall', token: 'dsadasdasdsada')
+ws = WeatherStation.create(name: 'Arduino hall', token: 'test_token')
 
 r = Random.new
 150.times do
   tmp = r.rand(-40..40)
   hum = r.rand(0..100)
 
-  MeteoDatum.create(:weather_station_id => ws.id, :temperature => tmp, :humidity => hum)
+  MeteoDatum.create(:weather_station_id => ws.id, :token => ws.token, :temperature => tmp, :humidity => hum)
 end
