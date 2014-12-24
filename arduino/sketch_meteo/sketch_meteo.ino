@@ -10,10 +10,14 @@ dht11 DHT11;
 //BUT TAKE CARE how to connect it : (Data, 5V, GND) when the bleu protection is in front of you.
 
 
-// ethernet interface mac address, must be unique on the LAN
+// ethernet interface mac address
 static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
 
-byte Ethernet::buffer[700];
+// remote website ip address and port
+static byte hisip[] = { 10,10,10,103 };
+static int hisport = 3000;
+
+byte Ethernet::buffer[1024];
 static uint32_t timer;
 
 // change to the page on that server
@@ -100,18 +104,23 @@ void setup()
   
   if (ether.begin(sizeof Ethernet::buffer, mymac, 10) == 0) 
     Serial.println(F("Failed to access Ethernet controller"));
+  
   if (!ether.dhcpSetup())
     Serial.println(F("DHCP failed"));
+
+//  if (!ether.dnsLookup("www.google.com"))
+//    Serial.println("DNS failed");
+  ether.copyIp(ether.hisip, hisip);
+  ether.hisport  =  hisport;
+  ether.printIp("Server: ", ether.hisip);
+
+  while (ether.clientWaitingGw())
+    ether.packetLoop(ether.packetReceive());
+  Serial.println("Gateway found");
 
   ether.printIp("IP:  ", ether.myip);
   ether.printIp("GW:  ", ether.gwip);  
   ether.printIp("DNS: ", ether.dnsip); 
-
-  if (!ether.dnsLookup(proxyHost))
-    Serial.println("DNS failed");
-  ether.hisport  =  8123;
-
-  ether.printIp("SRV: ", ether.hisip);
 
   sendToAPI(6, 7 , 8);
 
@@ -121,41 +130,50 @@ void setup()
 
 static byte sendToAPI (float humidity, float temperature, float dew_point) {
   Serial.println("Sending meteo_datum...");
+  
+  char temperatureString[10];
+  char humidityString[10];
+  char dew_pointString[10];
+  
+  dtostrf(temperature,1,2,temperatureString);
+  dtostrf(humidity,1,2,humidityString);
+  dtostrf(dew_point,1,2,dew_pointString);
+  
   byte sd = stash.create();
    
   stash.print("{\"meteo_data\":{\"token\":\"test_token\",\"humidity\":\"");
-  stash.print(humidity);
+  stash.print(humidityString);
   stash.print("\",\"temperature\":\"");
-  stash.print(temperature);
+  stash.print(temperatureString);
   stash.print("\",\"dew_point\":\"");
-  stash.print(dew_point);
+  stash.print(dew_pointString);
   stash.print("\"}}");  
   stash.save();
 
+
   // Compose the http POST request, taking the headers below and appending
   // previously created stash in the sd holder. 
-  Stash::prepare(PSTR("POST 10.10.10.103:3000/api/v1/weather_stations/1/meteo_data HTTP/1.1" "\r\n"
-    "Host: 10.10.10.103:3000" "\r\n"
-    "Content-Type:application/json \r\n"
-    "Accept:application/json \r\n"
-    "Content-Length: $D \r\n"    
+  Stash::prepare(PSTR("POST http://10.10.10.103:3000/api/v1/weather_stations/1/meteo_data HTTP/1.1\r\n"
+    "Host: 10.10.10.103:3000\r\n"
+    "Content-Type: application/json\r\n"
+    "Accept: application/json\r\n"
+    "Content-Length: $D\r\n"    
     "\r\n"
     "$H"),
   stash.size(), sd);
   
-  Serial.println(sd);
-  byte session = ether.tcpSend();
-  Serial.println(session);
-
   // send the packet - this also releases all stash buffers once done
   // Save the session ID so we can watch for it in the main loop.
-  return session;
+  return ether.tcpSend();
 }
 
 
 void loop()
 {
   Serial.println("Loop\n");
+
+  word len = ether.packetReceive();
+  word pos = ether.packetLoop(len);
 
   thisMillis = millis();
   if(thisMillis - lastMillis > delayMillis)
