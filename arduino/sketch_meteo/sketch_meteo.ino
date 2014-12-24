@@ -18,6 +18,8 @@ static uint32_t timer;
 
 // change to the page on that server
 char apiServer[] = "10.10.10.103:3000/api/v1/weather_stations/1/meteo_data";
+char proxyHost[] PROGMEM = "10.10.10.103";
+int proxyPort = 3000;
 
 int totalCount = 0; 
 
@@ -27,6 +29,8 @@ int totalCount = 0;
 
 unsigned long thisMillis = 0;
 unsigned long lastMillis = 0;
+
+
 
 Stash stash;
 
@@ -103,34 +107,49 @@ void setup()
   ether.printIp("GW:  ", ether.gwip);  
   ether.printIp("DNS: ", ether.dnsip); 
 
+  if (!ether.dnsLookup(proxyHost))
+    Serial.println("DNS failed");
+  ether.hisport  =  8123;
+
+  ether.printIp("SRV: ", ether.hisip);
+
+  sendToAPI(6, 7 , 8);
+
   Serial.println(F("Ready"));
   Serial.println();
 }
 
-static int sendToAPI (float humidity, float temperature, float dew_point) {
+static byte sendToAPI (float humidity, float temperature, float dew_point) {
   Serial.println("Sending meteo_datum...");
   byte sd = stash.create();
-  
-  // insure params is big enough to hold your variables
-  char params[256];
-  sprintf(params,"{\"meteo_data\":{\"token\":\"test_token\",\"humidity\":\"%f\",\"temperature\":\"%f\",\"dew_point\":\"%f\"}}", humidity, temperature, dew_point);     
-
-  stash.print(params);
+   
+  stash.print("{\"meteo_data\":{\"token\":\"test_token\",\"humidity\":\"");
+  stash.print(humidity);
+  stash.print("\",\"temperature\":\"");
+  stash.print(temperature);
+  stash.print("\",\"dew_point\":\"");
+  stash.print(dew_point);
+  stash.print("\"}}");  
   stash.save();
-  int stash_size = stash.size();
 
   // Compose the http POST request, taking the headers below and appending
-  // previously created stash in the sd holder.
-  Stash::prepare(PSTR("POST http://$F/update HTTP/1.0" "\r\n"
-    "Host: 10.10.10.103" "\r\n"
-    "Content-Length: $D" "\r\n"
+  // previously created stash in the sd holder. 
+  Stash::prepare(PSTR("POST 10.10.10.103:3000/api/v1/weather_stations/1/meteo_data HTTP/1.1" "\r\n"
+    "Host: 10.10.10.103:3000" "\r\n"
+    "Content-Type:application/json \r\n"
+    "Accept:application/json \r\n"
+    "Content-Length: $D \r\n"    
     "\r\n"
     "$H"),
-  apiServer, stash_size, sd);
+  stash.size(), sd);
+  
+  Serial.println(sd);
+  byte session = ether.tcpSend();
+  Serial.println(session);
 
   // send the packet - this also releases all stash buffers once done
   // Save the session ID so we can watch for it in the main loop.
-  return ether.tcpSend();
+  return session;
 }
 
 
@@ -138,14 +157,14 @@ void loop()
 {
   Serial.println("Loop\n");
 
-  int chk = DHT11.read(DHT11PIN);
- 
   thisMillis = millis();
   if(thisMillis - lastMillis > delayMillis)
   {
     lastMillis = thisMillis;
+/*
 
     Serial.print("Read sensor: ");
+    int chk = DHT11.read(DHT11PIN);
     switch (chk)
     {
     case DHTLIB_OK: 
@@ -165,6 +184,11 @@ void loop()
     float humidity = DHT11.humidity;
     float temperature = DHT11.temperature;
     float dew_point = dewPointFast(DHT11.temperature, DHT11.humidity);
+
+*/
+    float humidity = 5;
+    float temperature = 6;
+    float dew_point = 7;
 
     Serial.print("Humidity (%): ");
     Serial.println(humidity, 2);
