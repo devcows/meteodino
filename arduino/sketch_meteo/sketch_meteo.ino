@@ -1,42 +1,37 @@
 #include <EtherCard.h>
 #include <dht11.h>
 
-dht11 DHT11;
-
-//Digital pin 5
-#define DHT11PIN 5
-
 //DHT connection 
 //BUT TAKE CARE how to connect it : (Data, 5V, GND) when the bleu protection is in front of you.
+//Digital pin 5
+#define DHT11PIN 5
+dht11 DHT11;
+float humidity, temperature, dew_point;
 
 
 // ethernet interface mac address
 static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
 
-// remote website ip address and port
-static byte hisip[] = { 10,10,10,103 };
-static int hisport = 3000;
-
 byte Ethernet::buffer[1024];
 static uint32_t timer;
 
-// change to the page on that server
-char apiServer[] = "10.10.10.103:3000/api/v1/weather_stations/1/meteo_data";
-char proxyHost[] PROGMEM = "10.10.10.103";
-int proxyPort = 3000;
+Stash stash;
 
-int totalCount = 0; 
+// change to the page on that server
+const char website[] PROGMEM = "10.10.10.101:3000";
+//const char website[] PROGMEM = "meteodino.guerreroibarra.com";
+// remote website ip address and port
+static byte hisip[] = { 10,10,10,101 };
+static int hisport = 3000;
+
 
 // set this to the number of milliseconds delay
-// this is 5 seconds
-#define delayMillis 5000UL
+// this is 1 minute
+#define delayMillis 60000UL
 
 unsigned long thisMillis = 0;
 unsigned long lastMillis = 0;
 
-
-
-Stash stash;
 
 //Celsius to Fahrenheit conversion
 double Fahrenheit(double celsius)
@@ -102,86 +97,82 @@ void setup()
   pinMode(DHT11PIN, INPUT);           // set pin to input
   
   
-  if (ether.begin(sizeof Ethernet::buffer, mymac, 10) == 0) 
+  if (ether.begin(sizeof Ethernet::buffer, mymac, 10) == 0) {
     Serial.println(F("Failed to access Ethernet controller"));
+  }
   
-  if (!ether.dhcpSetup())
+  if (!ether.dhcpSetup()){
     Serial.println(F("DHCP failed"));
-
-//  if (!ether.dnsLookup("www.google.com"))
+  }
+  
+//  if (!ether.dnsLookup(website))
 //    Serial.println("DNS failed");
   ether.copyIp(ether.hisip, hisip);
   ether.hisport  =  hisport;
   ether.printIp("Server: ", ether.hisip);
 
-  while (ether.clientWaitingGw())
+  while (ether.clientWaitingGw()){
     ether.packetLoop(ether.packetReceive());
+  }
   Serial.println("Gateway found");
 
   ether.printIp("IP:  ", ether.myip);
   ether.printIp("GW:  ", ether.gwip);  
   ether.printIp("DNS: ", ether.dnsip); 
 
-  sendToAPI(6, 7 , 8);
-
   Serial.println(F("Ready"));
   Serial.println();
+  
+  readSensors();
+  sendToAPI(humidity, temperature, dew_point);
 }
 
 static byte sendToAPI (float humidity, float temperature, float dew_point) {
   Serial.println("Sending meteo_datum...");
   
-  char temperatureString[10];
-  char humidityString[10];
-  char dew_pointString[10];
+  Serial.print("Humidity (%): ");
+  Serial.println(humidity, 2);
+
+  Serial.print("Temperature (°C): ");
+  Serial.println(temperature, 2);
+
+  //Serial.print("Dew Point (°C): ");
+  //Serial.println(dewPoint(DHT11.temperature, DHT11.humidity));
+
+  Serial.print("Dew PointFast (°C): ");
+  Serial.println(dew_point); 
   
-  dtostrf(temperature,1,2,temperatureString);
-  dtostrf(humidity,1,2,humidityString);
-  dtostrf(dew_point,1,2,dew_pointString);
-  
-  byte sd = stash.create();
-   
+  byte sd = stash.create();   
   stash.print("{\"meteo_data\":{\"token\":\"test_token\",\"humidity\":\"");
-  stash.print(humidityString);
+  stash.print(humidity);
   stash.print("\",\"temperature\":\"");
-  stash.print(temperatureString);
+  stash.print(temperature);
   stash.print("\",\"dew_point\":\"");
-  stash.print(dew_pointString);
+  stash.print(dew_point);
   stash.print("\"}}");  
   stash.save();
 
-
   // Compose the http POST request, taking the headers below and appending
   // previously created stash in the sd holder. 
-  Stash::prepare(PSTR("POST http://10.10.10.103:3000/api/v1/weather_stations/1/meteo_data HTTP/1.1\r\n"
-    "Host: 10.10.10.103:3000\r\n"
+  Stash::prepare(PSTR("POST http://$F/api/v1/weather_stations/1/meteo_data HTTP/1.1\r\n"
+    "Host: $F\r\n"
     "Content-Type: application/json\r\n"
     "Accept: application/json\r\n"
     "Content-Length: $D\r\n"    
     "\r\n"
     "$H"),
-  stash.size(), sd);
+  website, website, stash.size(), sd);
   
   // send the packet - this also releases all stash buffers once done
   // Save the session ID so we can watch for it in the main loop.
-  return ether.tcpSend();
+  int session = ether.tcpSend();
+  delay(50);
+  
+  return session;
 }
 
-
-void loop()
-{
-  Serial.println("Loop\n");
-
-  word len = ether.packetReceive();
-  word pos = ether.packetLoop(len);
-
-  thisMillis = millis();
-  if(thisMillis - lastMillis > delayMillis)
-  {
-    lastMillis = thisMillis;
-/*
-
-    Serial.print("Read sensor: ");
+void readSensors(){
+  Serial.print("Read sensors: ");
     int chk = DHT11.read(DHT11PIN);
     switch (chk)
     {
@@ -199,33 +190,24 @@ void loop()
 		break;
     }
 
-    float humidity = DHT11.humidity;
-    float temperature = DHT11.temperature;
-    float dew_point = dewPointFast(DHT11.temperature, DHT11.humidity);
+    humidity = DHT11.humidity;
+    temperature = DHT11.temperature;
+    dew_point = dewPointFast(DHT11.temperature, DHT11.humidity);
+}
 
-*/
-    float humidity = 5;
-    float temperature = 6;
-    float dew_point = 7;
 
-    Serial.print("Humidity (%): ");
-    Serial.println(humidity, 2);
+void loop()
+{
+  word len = ether.packetReceive();
+  word pos = ether.packetLoop(len);
 
-    Serial.print("Temperature (°C): ");
-    Serial.println(temperature, 2);
-
-    //Serial.print("Dew Point (°C): ");
-    //Serial.println(dewPoint(DHT11.temperature, DHT11.humidity));
-
-    Serial.print("Dew PointFast (°C): ");
-    Serial.println(dew_point); 
+  thisMillis = millis();
+  if(thisMillis - lastMillis > delayMillis)
+  {
+    lastMillis = thisMillis;    
+    readSensors();
     sendToAPI(humidity, temperature, dew_point);
-
-    totalCount++;
-    Serial.println(totalCount,DEC);
   }    
-
-  delay(2000);
 }
 
 
