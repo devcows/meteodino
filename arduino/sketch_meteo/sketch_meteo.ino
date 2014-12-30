@@ -133,7 +133,6 @@ void setup()
   Serial.println(F("Ready"));
   Serial.println();
 
-  lcd.clear();  
   readSensors();
   sendToAPI(humidity, temperature, dew_point);
   writeLCD();
