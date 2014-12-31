@@ -15,5 +15,5 @@ r = Random.new
   hum = r.rand(0..100)
   dew = r.rand(0..100)
 
-  MeteoDatum.create(:weather_station_id => ws.id, :token => ws.token, :temperature => tmp, :humidity => hum, :dew_point => dew)
+  MeteoDatum.create(:weather_station_id => ws.id, :token => ws.token, :temperature_in => tmp, :humidity_in => hum, :dew_point_in => dew)
 end

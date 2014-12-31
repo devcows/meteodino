@@ -26,7 +26,7 @@ Enter to project directory:
 
 Test:
 	curl -H "Content-Type:application/json" -H "Accept:application/json" \
-        -d '{ "meteo_data" : {"token" : "test_token", "humidity" : "23", "temperature" : "45", "dew_point": "36"} }' \
+        -d '{ "meteo_data" : {"token" : "test_token", "humidity_in" : "23", "temperature_in" : "45", "dew_point_in": "36"} }' \
         localhost:3000/api/v1/weather_stations/1/meteo_data
 
 

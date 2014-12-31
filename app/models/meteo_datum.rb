@@ -12,7 +12,7 @@
 #
 
 class MeteoDatum < ActiveRecord::Base
-  attr_accessible :weather_station_id, :temperature, :humidity, :dew_point, :token
+  attr_accessible :weather_station_id, :temperature_in, :humidity_in, :dew_point_in, :token
   attr_accessor :token
 
   belongs_to :weather_station

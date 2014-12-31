@@ -9,7 +9,7 @@ LiquidCrystal lcd(4, 5, 6, 7, 8, 9);
 //Digital pin 2
 #define DHT11PIN 2
 dht11 DHT11;
-float humidity, temperature, dew_point;
+float humidity_in, temperature_in, dew_point_in;
 
 
 // ethernet interface mac address
@@ -134,8 +134,8 @@ void setup()
   Serial.println();
 
   readSensors();
-  sendToAPI(humidity, temperature, dew_point);
-  writeLCD();
+  sendToAPI(humidity_in, temperature_in, dew_point_in);
+  writeLCD(humidity_in, temperature_in, dew_point_in);
 }
 
 static byte sendToAPI (float humidity, float temperature, float dew_point) {
@@ -201,24 +201,24 @@ void readSensors(){
 		break;
   }
 
-  humidity = DHT11.humidity;
-  temperature = DHT11.temperature;
-  dew_point = dewPointFast(DHT11.temperature, DHT11.humidity);
+  humidity_in = DHT11.humidity;
+  temperature_in = DHT11.temperature;
+  dew_point_in = dewPointFast(DHT11.temperature, DHT11.humidity);
     
   Serial.print("Humidity (%): ");
-  Serial.println(humidity, 2);
+  Serial.println(humidity_in, 2);
 
   Serial.print("Temperature (°C): ");
-  Serial.println(temperature, 2);
+  Serial.println(temperature_in, 2);
 
   //Serial.print("Dew Point (°C): ");
   //Serial.println(dewPoint(DHT11.temperature, DHT11.humidity));
 
   Serial.print("Dew PointFast (°C): ");
-  Serial.println(dew_point); 
+  Serial.println(dew_point_in);
 }
 
-void writeLCD(){   
+void writeLCD(float humidity, float temperature, float dew_point){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.write("Tmp:");
@@ -241,14 +241,14 @@ void loop()
   {
     lastMillisSend = thisMillis;
     readSensors();    
-    sendToAPI(humidity, temperature, dew_point);
+    sendToAPI(humidity_in, temperature_in, dew_point_in);
   }
   
   if(thisMillis - lastMillisLCD > delayMillisLCD)
   {
     lastMillisLCD = thisMillis;    
     readSensors();   
-    writeLCD();
+    writeLCD(humidity_in, temperature_in, dew_point_in);
   }    
 }
 
