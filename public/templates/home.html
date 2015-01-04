@@ -1,0 +1,16 @@
+<!-- public/templates/home.html -->
+
+This is the home page.
+
+<br />
+<br />
+
+<label for="weather_station">Weather station:</label>
+<select id="weather_station" ng-model="weather_station" ng-change="update_station()">
+    <option value="">-- Choose station --</option>
+    <option ng-repeat="ws in weather_stations" value="{{ws.id}}">{{ws.name}}</option>
+</select>
+
+<div id="station_results">
+    {{weather_station_data}}
+</div>
