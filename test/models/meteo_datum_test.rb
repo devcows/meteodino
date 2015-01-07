@@ -14,7 +14,20 @@
 require 'test_helper'
 
 class MeteoDatumTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+
+  test 'should not save meteodatum without params' do
+    meteo = MeteoDatum.new
+    assert_not meteo.save
+  end
+
+  test 'should save meteodatum with params' do
+    meteo = MeteoDatum.new
+
+    meteo.weather_station_id = 1
+    meteo.temperature_in = 1
+    meteo.dew_point_in = 1
+    meteo.token = 'MyString'
+
+    assert meteo.save
+  end
 end

@@ -18,6 +18,9 @@ class MeteoDatum < ActiveRecord::Base
   belongs_to :weather_station
 
   validate :check_token
+  validate :weather_station_id, presence: true
+  validate :humidity_in, presence: true
+  validate :dew_point_in, presence: true
 
   def check_token
     ws = WeatherStation.find_by_token(self.token)

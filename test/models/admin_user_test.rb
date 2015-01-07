@@ -20,7 +20,17 @@
 require 'test_helper'
 
 class AdminUserTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test 'should not save admin user without params' do
+    au = AdminUser.new
+    assert_not au.save
+  end
+
+  test 'should save admin user with params' do
+    au = AdminUser.new
+
+    au.email = 'MyString@MyString.com'
+    au.password = 'MyString'
+
+    assert au.save
+  end
 end

@@ -21,7 +21,11 @@ static uint32_t timer;
 Stash stash;
 
 // change to the page on that server
-const char website[] PROGMEM = "10.10.10.101:3000";
+const char website[] PROGMEM = "http://put-here-your-api-server/api/v1/weather_stations/:station-id/meteo_data";
+
+
+http://$F/api/v1/weather_stations/1/meteo_data
+
 //const char website[] PROGMEM = "meteodino.guerreroibarra.com";
 // remote website ip address and port
 static byte hisip[] = { 10,10,10,101 };

@@ -13,4 +13,7 @@ class WeatherStation < ActiveRecord::Base
   attr_accessible :name, :token
 
   has_many :meteo_datums
+
+  validates :name, presence: true
+  validates :token, presence: true
 end

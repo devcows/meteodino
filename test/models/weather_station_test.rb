@@ -12,7 +12,17 @@
 require 'test_helper'
 
 class WeatherStationTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test 'should not save weather station without params' do
+    ws = WeatherStation.new
+    assert_not ws.save
+  end
+
+  test 'should save weather station with params' do
+    ws = WeatherStation.new
+
+    ws.name = 'MyString'
+    ws.token = 'MyString'
+
+    assert ws.save
+  end
 end
