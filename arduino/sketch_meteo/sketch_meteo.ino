@@ -21,25 +21,19 @@ static uint32_t timer;
 Stash stash;
 
 // change to the page on that server
-const char website[] PROGMEM = "http://put-here-your-api-server/api/v1/weather_stations/:station-id/meteo_data";
-
-
-http://$F/api/v1/weather_stations/1/meteo_data
-
-//const char website[] PROGMEM = "meteodino.guerreroibarra.com";
-// remote website ip address and port
-static byte hisip[] = { 10,10,10,101 };
-static int hisport = 3000;
+const char apiServer[] PROGMEM = "http://<<put-here-your-api-server>>/api/v1/weather_stations/<<put-here-station-id>>/meteo_data";
+const char server[] PROGMEM = "<<put-here-your-api-server>>";
 
 
 // set this to the number of milliseconds delay
-// this is 1 minute
-#define delayMillisSend 60000UL
+// this is 10 minute
+#define delayMillisSend 600000UL
 #define delayMillisLCD 5000UL
 
 unsigned long thisMillis = 0;
 unsigned long lastMillisSend = 0;
 unsigned long lastMillisLCD = 0;
+unsigned int defaultSensorsRetries = 3;
 
 
 //Celsius to Fahrenheit conversion
@@ -119,10 +113,9 @@ void setup()
     Serial.println(F("DHCP failed"));
   }
   
-//  if (!ether.dnsLookup(website))
-//    Serial.println("DNS failed");
-  ether.copyIp(ether.hisip, hisip);
-  ether.hisport  =  hisport;
+  if (!ether.dnsLookup(server)){
+    Serial.println("DNS failed");
+  }  
   ether.printIp("Server: ", ether.hisip);
 
   while (ether.clientWaitingGw()){
@@ -137,7 +130,7 @@ void setup()
   Serial.println(F("Ready"));
   Serial.println();
 
-  readSensors();
+  readSensors(defaultSensorsRetries);
   sendToAPI(humidity_in, temperature_in, dew_point_in);
   writeLCD(humidity_in, temperature_in, dew_point_in);
 }
@@ -158,25 +151,25 @@ static byte sendToAPI (float humidity, float temperature, float dew_point) {
   Serial.println(dew_point); 
   
   byte sd = stash.create();   
-  stash.print("{\"meteo_data\":{\"token\":\"test_token\",\"humidity\":\"");
+  stash.print("{\"meteo_data\":{\"token\":\"<<put-here-token-station>>\",\"humidity_in\":\"");
   stash.print(humidity);
-  stash.print("\",\"temperature\":\"");
+  stash.print("\",\"temperature_in\":\"");
   stash.print(temperature);
-  stash.print("\",\"dew_point\":\"");
+  stash.print("\",\"dew_point_in\":\"");
   stash.print(dew_point);
   stash.print("\"}}");  
   stash.save();
 
   // Compose the http POST request, taking the headers below and appending
   // previously created stash in the sd holder. 
-  Stash::prepare(PSTR("POST http://$F/api/v1/weather_stations/1/meteo_data HTTP/1.1\r\n"
+  Stash::prepare(PSTR("POST $F HTTP/1.1\r\n"
     "Host: $F\r\n"
     "Content-Type: application/json\r\n"
     "Accept: application/json\r\n"
     "Content-Length: $D\r\n"    
     "\r\n"
     "$H"),
-  website, website, stash.size(), sd);
+  apiServer, server, stash.size(), sd);
   
   // send the packet - this also releases all stash buffers once done
   // Save the session ID so we can watch for it in the main loop.
@@ -186,7 +179,7 @@ static byte sendToAPI (float humidity, float temperature, float dew_point) {
   return session;
 }
 
-void readSensors(){
+void readSensors(int retries){
   Serial.print("Read sensors: ");
   int chk = DHT11.read(DHT11PIN);
   switch (chk)
@@ -196,18 +189,30 @@ void readSensors(){
 		break;
     case DHTLIB_ERROR_CHECKSUM: 
 		Serial.println("Checksum error"); 
+                
+                if(retries > 0){
+                  readSensors(retries - 1);
+                }
 		break;
     case DHTLIB_ERROR_TIMEOUT: 
 		Serial.println("Time out error"); 
+                
+                if(retries > 0){
+                  readSensors(retries - 1);
+                }
 		break;
     default: 
 		Serial.println("Unknown error"); 
+                
+                if(retries > 0){
+                  readSensors(retries - 1);
+                }
 		break;
   }
 
   humidity_in = DHT11.humidity;
   temperature_in = DHT11.temperature;
-  dew_point_in = dewPointFast(DHT11.temperature, DHT11.humidity);
+  dew_point_in = dewPoint(DHT11.temperature, DHT11.humidity);
     
   Serial.print("Humidity (%): ");
   Serial.println(humidity_in, 2);
@@ -215,10 +220,7 @@ void readSensors(){
   Serial.print("Temperature (°C): ");
   Serial.println(temperature_in, 2);
 
-  //Serial.print("Dew Point (°C): ");
-  //Serial.println(dewPoint(DHT11.temperature, DHT11.humidity));
-
-  Serial.print("Dew PointFast (°C): ");
+  Serial.print("Dew Point (°C): ");
   Serial.println(dew_point_in);
 }
 
@@ -244,18 +246,14 @@ void loop()
   if(thisMillis - lastMillisSend > delayMillisSend)
   {
     lastMillisSend = thisMillis;
-    readSensors();    
+    readSensors(defaultSensorsRetries);    
     sendToAPI(humidity_in, temperature_in, dew_point_in);
   }
   
   if(thisMillis - lastMillisLCD > delayMillisLCD)
   {
     lastMillisLCD = thisMillis;    
-    readSensors();   
+    readSensors(defaultSensorsRetries);   
     writeLCD(humidity_in, temperature_in, dew_point_in);
   }    
 }
-
-
-
-
