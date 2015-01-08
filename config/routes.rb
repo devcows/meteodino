@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     end
   end
 
+  #Last route in routes.rb
+  match '*a', :to => 'errors#routing', via: :all
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
