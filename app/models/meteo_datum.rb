@@ -13,7 +13,7 @@
 
 class MeteoDatum < ActiveRecord::Base
   attr_accessible :weather_station_id, :temperature_in, :humidity_in, :dew_point_in, :token
-  attr_accessor :token
+  attr_accessor :temperature_in_avg, :temperature_in_max, :temperature_in_min, :token
 
   belongs_to :weather_station
 

@@ -31,8 +31,9 @@ Test:
 
 
                             Prefix Verb URI Pattern                                                           Controller#Action
- api_v1_weather_station_meteo_data GET  /api/v1/weather_stations/:weather_station_id/meteo_data(.:format)     api/v1/meteo_data#index {:format=>"json"}
-                                   POST /api/v1/weather_stations/:weather_station_id/meteo_data(.:format)     api/v1/meteo_data#create {:format=>"json"}
-api_v1_weather_station_meteo_datum GET  /api/v1/weather_stations/:weather_station_id/meteo_data/:id(.:format) api/v1/meteo_data#show {:format=>"json"}
-           api_v1_weather_stations GET  /api/v1/weather_stations(.:format)                                    api/v1/weather_stations#index {:format=>"json"}
-            api_v1_weather_station GET  /api/v1/weather_stations/:id(.:format)                                api/v1/weather_stations#show {:format=>"json"}
+api_v1_weather_station_meteo_data_last_day GET        /api/v1/weather_stations/:weather_station_id/meteo_data_last_day(.:format) api/v1/weather_stations#meteo_data_last_day {:format=>"json"}
+         api_v1_weather_station_meteo_data GET        /api/v1/weather_stations/:weather_station_id/meteo_data(.:format)          api/v1/meteo_data#index {:format=>"json"}
+                                           POST       /api/v1/weather_stations/:weather_station_id/meteo_data(.:format)          api/v1/meteo_data#create {:format=>"json"}
+        api_v1_weather_station_meteo_datum GET        /api/v1/weather_stations/:weather_station_id/meteo_data/:id(.:format)      api/v1/meteo_data#show {:format=>"json"}
+                   api_v1_weather_stations GET        /api/v1/weather_stations(.:format)                                         api/v1/weather_stations#index {:format=>"json"}
+                    api_v1_weather_station GET        /api/v1/weather_stations/:id(.:format)                                     api/v1/weather_stations#show {:format=>"json"}

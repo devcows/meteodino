@@ -14,6 +14,18 @@ class API::V1::WeatherStationsController < ApiApplicationController
     render 'api/v1/weather_stations/show', params: @weather_station
   end
 
+  def meteo_data_last_day
+    @weather_station = WeatherStation.find(params[:weather_station_id])
+    @meteo_data = @weather_station.meteo_datums
+                      .where('created_at >= ?', Date.yesterday)
+                      .group('HOUR(created_at)')
+                      .select('meteo_data.*, avg(temperature_in) as temperature_in_avg,
+                                             max(temperature_in) as temperature_in_max,
+                                             min(temperature_in) as temperature_in_min')
+
+    render 'api/v1/meteo_data/index', params: [@weather_station, @meteo_data]
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

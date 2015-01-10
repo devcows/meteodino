@@ -5,7 +5,10 @@ class API::V1::MeteoDataController < ApiApplicationController
   # GET /meteo_data.json
   def index
     @weather_station = WeatherStation.find(params[:weather_station_id])
-    render 'api/v1/meteo_data/index', params: @weather_station
+    @meteo_data = Array.new
+    @meteo_data = @weather_station.meteo_datums.limit(100) unless @weather_station.blank?
+
+    render 'api/v1/meteo_data/index', params: [@weather_station, @meteo_data]
   end
 
   # GET /meteo_data/1

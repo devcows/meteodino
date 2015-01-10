@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: 'json'} do
     namespace :v1 do
       resources :weather_stations, only: [:index, :show] do
+        get 'meteo_data_last_day'
+
         resources :meteo_data, only: [:index, :create, :show]
       end
     end
