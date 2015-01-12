@@ -17,6 +17,7 @@ If (mac or linux):
 
 Enter to project directory:
 	bundle install --without production
+	bower install
 
 	rake db:create
 	rake db:migrate
