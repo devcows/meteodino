@@ -1,4 +1,4 @@
-sqlite: &sqlite
+sqlitedev: &sqlitedev
   adapter: sqlite3
   database: db/<%= Rails.env %>.sqlite3
 
@@ -9,6 +9,15 @@ mysql: &mysql
   password: "<%=ENV['OPENSHIFT_MYSQL_DB_PASSWORD']%>"
   host:     <%=ENV['OPENSHIFT_MYSQL_DB_HOST']%>
   port:     <%=ENV['OPENSHIFT_MYSQL_DB_PORT']%>
+
+mysqldev: &mysqldev
+  adapter: mysql2
+  database: "meteodino"
+  username: "root"
+  password: ""
+  host:     127.0.0.1
+  port:     3306
+
 
 postgresql: &postgresql
   adapter: postgresql
@@ -24,7 +33,7 @@ defaults: &defaults
   pool: 5
   timeout: 5000
   encoding: utf8
-  <<: *<%= ENV['RAILS_DB'] || "sqlite" %>
+  <<: *<%= ENV['RAILS_DB'] || "mysqldev" %>
 
 development:
   <<: *defaults
@@ -33,4 +42,7 @@ test: &test
   <<: *defaults
 
 production:
-  <<: *defaults
+  pool: 5
+  timeout: 5000
+  encoding: utf8
+  <<: *mysql
