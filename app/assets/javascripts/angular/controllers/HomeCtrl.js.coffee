@@ -10,6 +10,8 @@ round_float = (value) ->
     $scope.last_day_hum_avg = ""
     $scope.weather_station_data_last_day = []
 
+    $("#placeholder").html("");
+
     $('#weather_station_results').hide();
     $('.ajax-loader').show();
 
@@ -29,15 +31,15 @@ round_float = (value) ->
           tmp_avg += data[i].temperature_in_avg
           hum_avg += data[i].humidity_in_avg
 
-          min_tmp.push([i, data[i].temperature_in_min])
-          avg_tmp.push([i, data[i].temperature_in_avg])
-          max_tmp.push([i, data[i].temperature_in_max])
+          min_tmp.push([data[i].hour, data[i].temperature_in_min])
+          avg_tmp.push([data[i].hour, data[i].temperature_in_avg])
+          max_tmp.push([data[i].hour, data[i].temperature_in_max])
 
 
         $scope.last_day_temp_avg = round_float(tmp_avg / data.length)
         $scope.last_day_hum_avg = round_float(hum_avg / data.length)
 
-        $.plot($("#placeholder"), [ min_tmp, avg_tmp, max_tmp ], { });
+        $.plot($("#placeholder"), [ min_tmp, avg_tmp, max_tmp ], { colors: ["#69E7FF", "#DBD700", "#FF415A"], });
         $('.ajax-loader-last-day').hide();
       )
 

@@ -21,7 +21,9 @@ class API::V1::WeatherStationsController < ApiApplicationController
                       .group('HOUR(created_at)')
                       .select('meteo_data.*, avg(temperature_in) as temperature_in_avg,
                                              max(temperature_in) as temperature_in_max,
-                                             min(temperature_in) as temperature_in_min')
+                                             min(temperature_in) as temperature_in_min,
+                                             HOUR(created_at) as hour,
+                                             count(*) as count')
 
     render 'api/v1/meteo_data/index', params: [@weather_station, @meteo_data]
   end

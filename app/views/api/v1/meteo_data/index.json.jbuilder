@@ -13,5 +13,13 @@ json.array!(@meteo_data) do |meteo_datum|
     json.temperature_in_min meteo_datum.attributes['temperature_in_min'].round(2)
   end
 
+  unless meteo_datum.attributes['hour'].blank?
+    json.hour meteo_datum.attributes['hour']
+  end
+
+  unless meteo_datum.attributes['count'].blank?
+    json.count meteo_datum.attributes['count']
+  end
+
   json.url api_v1_weather_station_meteo_datum_url(@weather_station, meteo_datum, format: :json)
 end
