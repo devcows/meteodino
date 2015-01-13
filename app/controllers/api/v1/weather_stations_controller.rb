@@ -17,7 +17,7 @@ class API::V1::WeatherStationsController < ApiApplicationController
   def meteo_data_last_day
     @weather_station = WeatherStation.find(params[:weather_station_id])
     @meteo_data = @weather_station.meteo_datums
-                      .where('created_at >= ?', Date.yesterday)
+                      .where('created_at >= DATE_SUB((select max(created_at) from meteo_data), INTERVAL 24 HOUR)')
                       .group('HOUR(created_at)')
                       .select('meteo_data.*, avg(temperature_in) as temperature_in_avg,
                                              max(temperature_in) as temperature_in_max,
