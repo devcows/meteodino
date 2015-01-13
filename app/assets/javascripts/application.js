@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.flot
 // require turbolinks
 
 //= require angular/angular

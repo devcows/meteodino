@@ -13,6 +13,8 @@ round_float = (value) ->
     $('#weather_station_results').hide();
     $('.ajax-loader').show();
 
+    $.plot($("#placeholder"), [ [[0, 0], [1, 1]] ], { yaxis: { max: 1 } });
+
     if $scope.weather_station != ""
       $('#weather_station_results').show();
       $http.get('./api/v1/weather_stations/' + $scope.weather_station + '/meteo_data_last_day').success((data) ->
