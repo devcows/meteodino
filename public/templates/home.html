@@ -2,8 +2,8 @@
 
 This is the home page.
 
-<br />
-<br />
+<br/>
+<br/>
 
 <label for="weather_station">Weather station:</label>
 <select id="weather_station" ng-model="weather_station" ng-change="update_station()">
@@ -13,24 +13,64 @@ This is the home page.
 
 <div id="weather_station_results" class="hide">
     <h1>Last day:</h1>
+
     <p class="ajax-loader ajax-loader-last-day">
-        <img src="ajax-loader.gif" />
+        <img src="ajax-loader.gif"/>
     </p>
 
     <p>
-        Temperature Max:{{last_day_temp_max}}<br />
-        Temperature Avg:{{last_day_temp_avg}}<br />
-        Temperature Min:{{last_day_temp_min}}<br />
+        Temperature Max:{{last_day_temp_max}}<br/>
+        Temperature Avg:{{last_day_temp_avg}}<br/>
+        Temperature Min:{{last_day_temp_min}}<br/>
     </p>
 
+    <div id="placeholder-last-day-tmp-legend" style="width:600px;"></div>
     <div id="placeholder-last-day-tmp" style="width:600px;height:300px"></div>
-    <br />
+
+    <br/>
 
     <p>
-        Humidity Max: {{last_day_hum_max}}<br />
-        Humidity Avg: {{last_day_hum_avg}}<br />
-        Humidity Min: {{last_day_hum_min}}<br />
+        Humidity Max: {{last_day_hum_max}}<br/>
+        Humidity Avg: {{last_day_hum_avg}}<br/>
+        Humidity Min: {{last_day_hum_min}}<br/>
     </p>
 
+    <div id="placeholder-last-day-hum-legend" style="width:600px;"></div>
     <div id="placeholder-last-day-hum" style="width:600px;height:300px"></div>
+
+    <br/>
+    <br/>
+
+
+    <div class="hide">
+        <h1>Custom:</h1>
+
+        <p class="ajax-loader ajax-loader-custom">
+            <img src="ajax-loader.gif"/>
+        </p>
+
+        From: <input type="text" class="datepicker datecontainer" placeholder="Select date..."/><br/>
+        To: <input type="text" class="datepicker datecontainer" placeholder="Select date..."/><br/>
+
+        <p>
+            Temperature Max:{{custom_temp_max}}<br/>
+            Temperature Avg:{{custom_temp_avg}}<br/>
+            Temperature Min:{{custom_temp_min}}<br/>
+        </p>
+
+        <div id="placeholder-custom-tmp-legend" style="width:600px;"></div>
+        <div id="placeholder-custom-tmp" style="width:600px;height:300px"></div>
+
+        <br/>
+
+        <p>
+            Humidity Max: {{custom_hum_max}}<br/>
+            Humidity Avg: {{custom_hum_avg}}<br/>
+            Humidity Min: {{custom_hum_min}}<br/>
+        </p>
+
+        <div id="placeholder-custom-hum-legend" style="width:600px;"></div>
+        <div id="placeholder-custom-hum" style="width:600px;height:300px"></div>
+
+    </div>
 </div>

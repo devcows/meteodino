@@ -80,16 +80,18 @@ round_float = (value) ->
         $scope.last_day_hum_min = minimal_hum
 
 
-        colors = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX]}
-        legend = {legend: {show: true, noColumns: 0, position: 'ne'}}
+        options_tmp = { colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: false, container: $('#placeholder-last-day-tmp-legend'), position: 'ne'}}
+        options_hum = { colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: false, container: $('#placeholder-last-day-hum-legend'), position: 'ne'}}
+        $.plot($("#placeholder-last-day-tmp"), [ {label:"Min", data:min_tmp}, {label:"Avg", data:avg_tmp}, {label:"Max", data:max_tmp} ], options_tmp)
+        $.plot($("#placeholder-last-day-hum"), [ {label:"Min", data:min_hum}, {label:"Avg", data:avg_hum}, {label:"Max", data:max_hum} ], options_hum)
 
-        $.plot($("#placeholder-last-day-tmp"), [ {label:"Min", data:min_tmp}, {label:"Avg", data:avg_tmp}, {label:"Max", data:max_tmp} ], { colors, legend})
-        $.plot($("#placeholder-last-day-hum"), [ {label:"Min", data:min_hum}, {label:"Avg", data:avg_hum}, {label:"Max", data:max_hum} ], { colors, legend})
         $('.ajax-loader-last-day').hide()
+        $('.ajax-loader-custom').hide()
       )
 
 
   #Main scope
+  $('.datepicker').datepicker();
   $scope.weather_stations = []
   $scope.weather_station_data_last_day = []
 
