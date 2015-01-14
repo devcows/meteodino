@@ -4,9 +4,9 @@
 #
 #  id                 :integer          not null, primary key
 #  weather_station_id :integer
-#  temperature_in     :float
-#  humidity_in        :float
-#  dew_point_in       :float
+#  temperature_in     :float(24)
+#  humidity_in        :float(24)
+#  dew_point_in       :float(24)
 #  created_at         :datetime
 #  updated_at         :datetime
 #

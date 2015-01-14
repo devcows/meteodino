@@ -22,6 +22,9 @@ class API::V1::WeatherStationsController < ApiApplicationController
                       .select('meteo_data.*, avg(temperature_in) as temperature_in_avg,
                                              max(temperature_in) as temperature_in_max,
                                              min(temperature_in) as temperature_in_min,
+                                             avg(humidity_in) as humidity_in_avg,
+                                             max(humidity_in) as humidity_in_max,
+                                             min(humidity_in) as humidity_in_min,
                                              HOUR(created_at) as hour,
                                              count(*) as count')
 
