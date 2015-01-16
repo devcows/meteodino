@@ -14,18 +14,22 @@ gem 'rake', '~> 0.9.6'
 # To speed up the 'git push' process you can exclude gems from bundle install:
 # For example, if you use rails + mysql, you can:
 #
-# $ rhc env set BUNDLE_WITHOUT="development test postgresql"
+# $ rhc env set BUNDLE_WITHOUT='development test postgresql'
 #
 # Add support for the MySQL
 group :production do
-  gem 'mysql2'
   gem 'pg'
 end
+gem 'mysql2'
 
 ### / OpenShift changes
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
+
+gem 'bootstrap-sass', '~> 3.3.1'
+gem 'autoprefixer-rails'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
@@ -35,7 +39,7 @@ gem 'coffee-rails', '~> 4.0.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-gem 'flot-rails', :git => "https://github.com/Kjarrigan/flot-rails.git"
+gem 'flot-rails', :git => 'https://github.com/Kjarrigan/flot-rails.git'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -65,6 +69,7 @@ end
 gem 'activeadmin', :github => 'activeadmin'
 gem 'devise'
 gem 'protected_attributes'
+gem 'rubocop'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

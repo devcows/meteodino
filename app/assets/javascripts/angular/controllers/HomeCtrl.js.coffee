@@ -91,7 +91,8 @@ round_float = (value) ->
 
 
   #Main scope
-  $('.datepicker').datepicker();
+  $('#weather_station_results').hide()
+  $('.datepicker').datepicker()
   $scope.weather_stations = []
   $scope.weather_station_data_last_day = []
 

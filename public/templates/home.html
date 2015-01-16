@@ -1,42 +1,56 @@
 <!-- public/templates/home.html -->
 
-This is the home page.
-
-<br/>
-<br/>
-
-<label for="weather_station">Weather station:</label>
-<select id="weather_station" ng-model="weather_station" ng-change="update_station()">
-    <option value="">-- Choose station --</option>
-    <option ng-repeat="ws in weather_stations" value="{{ws.id}}">{{ws.name}}</option>
-</select>
-
-<div id="weather_station_results" class="hide">
-    <h1>Last day:</h1>
-
-    <p class="ajax-loader ajax-loader-last-day">
-        <img src="ajax-loader.gif"/>
-    </p>
-
+<div class="row">
     <p>
-        Temperature Max:{{last_day_temp_max}}<br/>
-        Temperature Avg:{{last_day_temp_avg}}<br/>
-        Temperature Min:{{last_day_temp_min}}<br/>
+        <label for="weather_station">Weather station:</label>
+        <select id="weather_station" ng-model="weather_station" ng-change="update_station()">
+            <option value="">-- Choose station --</option>
+            <option ng-repeat="ws in weather_stations" value="{{ws.id}}">{{ws.name}}</option>
+        </select>
     </p>
+</div>
 
-    <div id="placeholder-last-day-tmp-legend" style="width:600px;"></div>
-    <div id="placeholder-last-day-tmp" style="width:600px;height:300px"></div>
+<div id="weather_station_results">
+    <div class="row">
+        <h1>Last day:</h1>
 
-    <br/>
+        <p class="ajax-loader ajax-loader-last-day">
+            <img src="ajax-loader.gif"/>
+        </p>
+    </div>
 
-    <p>
-        Humidity Max: {{last_day_hum_max}}<br/>
-        Humidity Avg: {{last_day_hum_avg}}<br/>
-        Humidity Min: {{last_day_hum_min}}<br/>
-    </p>
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                Temperature Max:{{last_day_temp_max}}<br/>
+                Temperature Avg:{{last_day_temp_avg}}<br/>
+                Temperature Min:{{last_day_temp_min}}<br/>
+            </p>
+        </div>
 
-    <div id="placeholder-last-day-hum-legend" style="width:600px;"></div>
-    <div id="placeholder-last-day-hum" style="width:600px;height:300px"></div>
+        <div class="col-md-6">
+            <p>
+                Humidity Max: {{last_day_hum_max}}<br/>
+                Humidity Avg: {{last_day_hum_avg}}<br/>
+                Humidity Min: {{last_day_hum_min}}<br/>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <div id="placeholder-last-day-tmp-legend" class="legends"></div>
+            <div id="placeholder-last-day-tmp" class="graphs"></div>
+
+        </div>
+
+        <div class="col-md-6">
+            <div id="placeholder-last-day-hum-legend" class="legends"></div>
+            <div id="placeholder-last-day-hum" class="graphs"></div>
+        </div>
+    </div>
+
 
     <br/>
     <br/>
@@ -74,3 +88,6 @@ This is the home page.
 
     </div>
 </div>
+
+<br/>
+<br/>

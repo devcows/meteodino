@@ -5,7 +5,7 @@ class API::V1::MeteoDataController < ApiApplicationController
   # GET /meteo_data.json
   def index
     @weather_station = WeatherStation.find(params[:weather_station_id])
-    @meteo_data = Array.new
+    @meteo_data = []
     @meteo_data = @weather_station.meteo_datums.order('created_at desc').limit(100) unless @weather_station.blank?
 
     render 'api/v1/meteo_data/index', params: [@weather_station, @meteo_data]
@@ -38,6 +38,7 @@ class API::V1::MeteoDataController < ApiApplicationController
   end
 
   def meteodatum_params
-    params.require(:meteo_data).permit(:token, :temperature_in, :humidity_in, :dew_point_in)
+    params.require(:meteo_data).permit(:token, :temperature_in, :humidity_in,
+                                       :dew_point_in)
   end
 end
