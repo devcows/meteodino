@@ -50,39 +50,49 @@
     <br/>
     <br/>
 
-
     <div class="hide">
-        <h1>Custom:</h1>
 
-        <p class="ajax-loader ajax-loader-custom">
-            <img src="ajax-loader.gif"/>
-        </p>
+        <div class="row">
+            <h1>Custom:</h1>
 
-        From: <input type="text" class="datepicker datecontainer" placeholder="Select date..."/><br/>
-        To: <input type="text" class="datepicker datecontainer" placeholder="Select date..."/><br/>
+            <p class="ajax-loader ajax-loader-custom">
+                <img src="ajax-loader.gif"/>
+            </p>
+        </div>
 
-        <p>
-            Temperature Max:{{custom_temp_max}}<br/>
-            Temperature Avg:{{custom_temp_avg}}<br/>
-            Temperature Min:{{custom_temp_min}}<br/>
-        </p>
+        <div class="row">
+            <p>
+                From: <input type="text" class="datepicker datecontainer" placeholder="Select date..."/>
+                To: <input type="text" class="datepicker datecontainer" placeholder="Select date..."/>
+            </p>
+        </div>
+        <br />
 
-        <div id="placeholder-custom-tmp-legend" style="width:600px;"></div>
-        <div id="placeholder-custom-tmp" style="width:600px;height:300px"></div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>
+                    Temperature Max:{{custom_temp_max}}<br/>
+                    Temperature Avg:{{custom_temp_avg}}<br/>
+                    Temperature Min:{{custom_temp_min}}<br/>
+                </p>
 
-        <br/>
+                <div id="placeholder-custom-tmp-legend" class="legends"></div>
+                <div id="placeholder-custom-tmp" class="graphs"></div>
+            </div>
 
-        <p>
-            Humidity Max: {{custom_hum_max}}<br/>
-            Humidity Avg: {{custom_hum_avg}}<br/>
-            Humidity Min: {{custom_hum_min}}<br/>
-        </p>
+            <div class="col-md-6">
+                <p>
+                    Humidity Max: {{custom_hum_max}}<br/>
+                    Humidity Avg: {{custom_hum_avg}}<br/>
+                    Humidity Min: {{custom_hum_min}}<br/>
+                </p>
 
-        <div id="placeholder-custom-hum-legend" style="width:600px;"></div>
-        <div id="placeholder-custom-hum" style="width:600px;height:300px"></div>
+                <div id="placeholder-custom-hum-legend" class="legends"></div>
+                <div id="placeholder-custom-hum" class="graphs"></div>
+            </div>
+        </div>
 
     </div>
 </div>
 
-<br/>
-<br/>
+<br />
