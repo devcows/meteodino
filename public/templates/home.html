@@ -28,8 +28,8 @@
 
                 <br/>
 
-                <div id="placeholder-last-day-tmp-legend" class="legends"></div>
-                <div id="placeholder-last-day-tmp" class="graphs"></div>
+            <div id="placeholder-last-day-tmp-legend" class="legends"></div>
+            <div id="placeholder-last-day-tmp" class="graphs"></div>
             </p>
         </div>
 
@@ -41,8 +41,8 @@
 
                 <br/>
 
-                <div id="placeholder-last-day-hum-legend" class="legends"></div>
-                <div id="placeholder-last-day-hum" class="graphs"></div>
+            <div id="placeholder-last-day-hum-legend" class="legends"></div>
+            <div id="placeholder-last-day-hum" class="graphs"></div>
             </p>
         </div>
     </div>
@@ -50,48 +50,53 @@
     <br/>
     <br/>
 
-    <div class="hide">
+    <div class="row">
+        <h1>Custom:</h1>
 
-        <div class="row">
-            <h1>Custom:</h1>
+        <p class="ajax-loader ajax-loader-custom">
+            <img src="ajax-loader.gif"/>
+        </p>
+    </div>
 
-            <p class="ajax-loader ajax-loader-custom">
-                <img src="ajax-loader.gif"/>
-            </p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="date_from">From:</label>
+                <input id="date_from" type="text" class="datepicker form-control" placeholder="Select date..."/>
+            </div>
         </div>
 
-        <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="date_to">To:</label>
+                <input id="date_to" type="text" class="datepicker form-control" placeholder="Select date..."/>
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <div class="row">
+        <div class="col-md-6">
             <p>
-                From: <input type="text" class="datepicker datecontainer" placeholder="Select date..."/>
-                To: <input type="text" class="datepicker datecontainer" placeholder="Select date..."/>
+                Temperature Max:{{custom_temp_max}}<br/>
+                Temperature Avg:{{custom_temp_avg}}<br/>
+                Temperature Min:{{custom_temp_min}}<br/>
             </p>
-        </div>
-        <br />
 
-        <div class="row">
-            <div class="col-md-6">
-                <p>
-                    Temperature Max:{{custom_temp_max}}<br/>
-                    Temperature Avg:{{custom_temp_avg}}<br/>
-                    Temperature Min:{{custom_temp_min}}<br/>
-                </p>
-
-                <div id="placeholder-custom-tmp-legend" class="legends"></div>
-                <div id="placeholder-custom-tmp" class="graphs"></div>
-            </div>
-
-            <div class="col-md-6">
-                <p>
-                    Humidity Max: {{custom_hum_max}}<br/>
-                    Humidity Avg: {{custom_hum_avg}}<br/>
-                    Humidity Min: {{custom_hum_min}}<br/>
-                </p>
-
-                <div id="placeholder-custom-hum-legend" class="legends"></div>
-                <div id="placeholder-custom-hum" class="graphs"></div>
-            </div>
+            <div id="placeholder-custom-tmp-legend" class="legends"></div>
+            <div id="placeholder-custom-tmp" class="graphs"></div>
         </div>
 
+        <div class="col-md-6">
+            <p>
+                Humidity Max: {{custom_hum_max}}<br/>
+                Humidity Avg: {{custom_hum_avg}}<br/>
+                Humidity Min: {{custom_hum_min}}<br/>
+            </p>
+
+            <div id="placeholder-custom-hum-legend" class="legends"></div>
+            <div id="placeholder-custom-hum" class="graphs"></div>
+        </div>
     </div>
 </div>
 

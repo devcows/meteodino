@@ -8,7 +8,6 @@ round_float = (value) ->
   Math.round(value * 100) / 100
 
 @meteodino.controller 'HomeCtrl', ['$scope', '$location', '$http', ($scope, $location, $http) ->
-
   $scope.update_station = () ->
     $scope.last_day_temp_avg = ""
     $scope.last_day_hum_avg = ""
@@ -80,19 +79,35 @@ round_float = (value) ->
         $scope.last_day_hum_min = minimal_hum
 
 
-        options_tmp = { colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: false, container: $('#placeholder-last-day-tmp-legend'), position: 'ne'}}
-        options_hum = { colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: false, container: $('#placeholder-last-day-hum-legend'), position: 'ne'}}
-        $.plot($("#placeholder-last-day-tmp"), [ {label:"Min", data:min_tmp}, {label:"Avg", data:avg_tmp}, {label:"Max", data:max_tmp} ], options_tmp)
-        $.plot($("#placeholder-last-day-hum"), [ {label:"Min", data:min_hum}, {label:"Avg", data:avg_hum}, {label:"Max", data:max_hum} ], options_hum)
+        options_tmp = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
+        options_hum = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
+        $.plot($("#placeholder-last-day-tmp"),
+          [{label: "Min", data: min_tmp}, {label: "Avg", data: avg_tmp}, {label: "Max", data: max_tmp}], options_tmp)
+        $.plot($("#placeholder-last-day-hum"),
+          [{label: "Min", data: min_hum}, {label: "Avg", data: avg_hum}, {label: "Max", data: max_hum}], options_hum)
+
+
+        date = new Date()
+        date_previous = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+        val_today = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+        val_previous = date_previous.getDate() + '/' + (date_previous.getMonth() + 1) + '/' + date_previous.getFullYear()
+
+        $("#date_from").val(val_previous)
+        $("#date_to").val(val_today)
+
+        #        $http.get('./api/v1/weather_stations/' + $scope.weather_station + '/meteo_data_last_day', {date_from: date_from, date_to: date_to}).success((data) ->
+        #          $scope.weather_stations = data
+        #          $('.ajax-loader-custom').hide()
+        #        )
 
         $('.ajax-loader-last-day').hide()
-        $('.ajax-loader-custom').hide()
       )
 
 
   #Main scope
   $('#weather_station_results').hide()
-  $('.datepicker').datepicker()
+  $('.datepicker').datepicker({dateFormat: 'dd/mm/yy'})
   $scope.weather_stations = []
   $scope.weather_station_data_last_day = []
 
