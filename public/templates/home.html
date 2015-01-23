@@ -76,26 +76,36 @@
     <br/>
 
     <div class="row">
-        <div class="col-md-6">
-            <p>
-                Temperature Max:{{custom_temp_max}}<br/>
-                Temperature Avg:{{custom_temp_avg}}<br/>
-                Temperature Min:{{custom_temp_min}}<br/>
-            </p>
-
-            <div id="placeholder-custom-tmp-legend" class="legends"></div>
-            <div id="placeholder-custom-tmp" class="graphs"></div>
+        <div id="data-custom-error" class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            No meteo data between dates!
         </div>
+    </div>
 
-        <div class="col-md-6">
-            <p>
-                Humidity Max: {{custom_hum_max}}<br/>
-                Humidity Avg: {{custom_hum_avg}}<br/>
-                Humidity Min: {{custom_hum_min}}<br/>
-            </p>
+    <div class="row">
+        <div id="data-custom">
+            <div class="col-md-6">
+                <p>
+                    Temperature Max:{{custom_temp_max}}<br/>
+                    Temperature Avg:{{custom_temp_avg}}<br/>
+                    Temperature Min:{{custom_temp_min}}<br/>
+                </p>
 
-            <div id="placeholder-custom-hum-legend" class="legends"></div>
-            <div id="placeholder-custom-hum" class="graphs"></div>
+                <div id="placeholder-custom-tmp-legend" class="legends"></div>
+                <div id="placeholder-custom-tmp" class="graphs"></div>
+            </div>
+
+            <div class="col-md-6">
+                <p>
+                    Humidity Max: {{custom_hum_max}}<br/>
+                    Humidity Avg: {{custom_hum_avg}}<br/>
+                    Humidity Min: {{custom_hum_min}}<br/>
+                </p>
+
+                <div id="placeholder-custom-hum-legend" class="legends"></div>
+                <div id="placeholder-custom-hum" class="graphs"></div>
+            </div>
         </div>
     </div>
 </div>

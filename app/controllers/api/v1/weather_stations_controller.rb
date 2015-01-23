@@ -21,6 +21,22 @@ class API::V1::WeatherStationsController < ApiApplicationController
     render 'api/v1/meteo_data/index', params: [@weather_station, @meteo_data]
   end
 
+
+  def meteo_data_custom
+    @weather_station = WeatherStation.find(params[:weather_station_id])
+    @meteo_data = []
+
+    begin
+      date_from = Date.parse(params[:date_from])
+      date_to = Date.parse(params[:date_to])
+      @meteo_data = @weather_station.get_metadata_custom(date_from, date_to)
+    rescue
+    end
+
+
+    render 'api/v1/meteo_data/index', params: [@weather_station, @meteo_data]
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
