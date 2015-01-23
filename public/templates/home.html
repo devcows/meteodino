@@ -21,29 +21,28 @@
 
     <div class="row">
         <div class="col-md-6">
-            <p>
-                Temperature Max:{{last_day_temp_max}}<br/>
-                Temperature Avg:{{last_day_temp_avg}}<br/>
-                Temperature Min:{{last_day_temp_min}}<br/>
-
-                <br/>
+            <p style="font-weight: bold;">
+                Temperature => <span style="color: {{color_max}};">Max {{last_day_temp_max}}&#8451;</span> | <span
+                    style="color: {{color_avg}}">Avg {{last_day_temp_avg}}&#8451;</span> | <span
+                    style="color: {{color_min}}">
+                Min {{last_day_temp_min}}&#8451;</span>
+            </p>
 
             <div id="placeholder-last-day-tmp-legend" class="legends"></div>
             <div id="placeholder-last-day-tmp" class="graphs"></div>
-            </p>
         </div>
 
         <div class="col-md-6">
-            <p>
-                Humidity Max: {{last_day_hum_max}}<br/>
-                Humidity Avg: {{last_day_hum_avg}}<br/>
-                Humidity Min: {{last_day_hum_min}}<br/>
+            <p style="font-weight: bold;">
+                Humidity => <span style="color: {{color_max}};">Max {{last_day_hum_max}}%</span> | <span
+                    style="color: {{color_avg}}">Avg {{last_day_hum_avg}}%</span> | <span
+                    style="color: {{color_min}}">
+                Min {{last_day_hum_min}}%</span>
+            </p>
 
-                <br/>
 
             <div id="placeholder-last-day-hum-legend" class="legends"></div>
             <div id="placeholder-last-day-hum" class="graphs"></div>
-            </p>
         </div>
     </div>
 
@@ -62,14 +61,16 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="date_from">From:</label>
-                <input id="date_from" type="text" class="datepicker form-control" placeholder="Select date..." ng-model="date_from" ng-change="update_custom()" />
+                <input id="date_from" type="text" class="datepicker form-control" placeholder="Select date..."
+                       ng-model="date_from" ng-change="update_custom()"/>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="form-group">
                 <label for="date_to">To:</label>
-                <input id="date_to" type="text" class="datepicker form-control" placeholder="Select date..." ng-model="date_to" ng-change="update_custom()" />
+                <input id="date_to" type="text" class="datepicker form-control" placeholder="Select date..."
+                       ng-model="date_to" ng-change="update_custom()"/>
             </div>
         </div>
     </div>
@@ -86,10 +87,11 @@
     <div class="row">
         <div id="data-custom">
             <div class="col-md-6">
-                <p>
-                    Temperature Max:{{custom_temp_max}}<br/>
-                    Temperature Avg:{{custom_temp_avg}}<br/>
-                    Temperature Min:{{custom_temp_min}}<br/>
+                <p style="font-weight: bold;">
+                    Temperature => <span style="color: {{color_max}};">Max {{custom_temp_max}}&#8451;</span> | <span
+                        style="color: {{color_avg}}">Avg {{custom_temp_avg}}&#8451;</span> | <span
+                        style="color: {{color_min}}">
+                    Min {{custom_temp_min}}&#8451;</span>
                 </p>
 
                 <div id="placeholder-custom-tmp-legend" class="legends"></div>
@@ -97,10 +99,11 @@
             </div>
 
             <div class="col-md-6">
-                <p>
-                    Humidity Max: {{custom_hum_max}}<br/>
-                    Humidity Avg: {{custom_hum_avg}}<br/>
-                    Humidity Min: {{custom_hum_min}}<br/>
+                <p style="font-weight: bold;">
+                    Humidity => <span style="color: {{color_max}};">Max {{custom_hum_max}}%</span> | <span
+                        style="color: {{color_avg}}">Avg {{custom_hum_avg}}%</span> | <span
+                        style="color: {{color_min}}">
+                    Min {{custom_hum_min}}%</span>
                 </p>
 
                 <div id="placeholder-custom-hum-legend" class="legends"></div>

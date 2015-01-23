@@ -4,6 +4,32 @@ COLOR_MED = "#DBD700"
 COLOR_MAX = "#FF415A"
 
 
+options_tmp = {
+  colors: [COLOR_MIN, COLOR_MED, COLOR_MAX],
+  legend: {show: true, noColumns: 0},
+  yaxis: {
+    tickFormatter: suffixFormatter = (val, axis) ->
+      return String(val) + "&#8451;"
+  },
+  xaxis: {
+    tickFormatter: suffixFormatter = (val, axis) ->
+      return String(val) + "h"
+  }
+}
+
+options_hum = {
+  colors: [COLOR_MIN, COLOR_MED, COLOR_MAX],
+  legend: {show: true, noColumns: 0}
+  yaxis: {
+    tickFormatter: suffixFormatter = (val, axis) ->
+      return String(val) + "%"
+  },
+  xaxis: {
+    tickFormatter: suffixFormatter = (val, axis) ->
+      return String(val) + "h"
+  }
+}
+
 round_float = (value) ->
   Math.round(value * 100) / 100
 
@@ -77,9 +103,6 @@ calculate_tmps = (data) ->
         $scope.custom_hum_max = maximum_hum
         $scope.custom_hum_min = minimal_hum
 
-
-        options_tmp = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
-        options_hum = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
         $.plot($("#placeholder-custom-tmp"),
           [{label: "Min", data: min_tmp}, {label: "Avg", data: avg_tmp}, {label: "Max", data: max_tmp}], options_tmp)
         $.plot($("#placeholder-custom-hum"),
@@ -127,9 +150,6 @@ calculate_tmps = (data) ->
         $scope.last_day_hum_max = maximum_hum
         $scope.last_day_hum_min = minimal_hum
 
-
-        options_tmp = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
-        options_hum = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
         $.plot($("#placeholder-last-day-tmp"),
           [{label: "Min", data: min_tmp}, {label: "Avg", data: avg_tmp}, {label: "Max", data: max_tmp}], options_tmp)
         $.plot($("#placeholder-last-day-hum"),
@@ -161,4 +181,8 @@ calculate_tmps = (data) ->
   $http.get('./api/v1/weather_stations').success((data) ->
     $scope.weather_stations = data
   )
+
+  $scope.color_min = COLOR_MIN
+  $scope.color_avg = COLOR_MED
+  $scope.color_max = COLOR_MAX
 ]
