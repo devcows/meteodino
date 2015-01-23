@@ -62,14 +62,14 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="date_from">From:</label>
-                <input id="date_from" type="text" class="datepicker form-control" placeholder="Select date..."/>
+                <input id="date_from" type="text" class="datepicker form-control" placeholder="Select date..." ng-model="date_from" ng-change="update_custom()" />
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="form-group">
                 <label for="date_to">To:</label>
-                <input id="date_to" type="text" class="datepicker form-control" placeholder="Select date..."/>
+                <input id="date_to" type="text" class="datepicker form-control" placeholder="Select date..." ng-model="date_to" ng-change="update_custom()" />
             </div>
         </div>
     </div>

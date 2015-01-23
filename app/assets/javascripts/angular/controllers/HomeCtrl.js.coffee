@@ -55,6 +55,42 @@ calculate_tmps = (data) ->
    max_hum]
 
 @meteodino.controller 'HomeCtrl', ['$scope', '$location', '$http', ($scope, $location, $http) ->
+  $scope.update_custom = () ->
+    $('#data-custom-error').hide()
+    $('.ajax-loader-custom').show()
+
+    val_previous = $("#date_from").val()
+    val_today = $("#date_to").val()
+
+    $http.get('./api/v1/weather_stations/' + $scope.weather_station + '/meteo_data_custom',
+      {params: {date_from: val_previous, date_to: val_today}}).success((data) ->
+      $scope.weather_station_data_custom = data
+
+      if data.length > 0
+        [minimal_tmp, tmp_avg, maximum_tmp, min_tmp, avg_tmp, max_tmp, minimal_hum, hum_avg, maximum_hum, min_hum, avg_hum, max_hum] = calculate_tmps(data)
+
+        $scope.custom_temp_avg = round_float(tmp_avg / data.length)
+        $scope.custom_hum_avg = round_float(hum_avg / data.length)
+        $scope.custom_temp_max = maximum_tmp
+        $scope.custom_temp_min = minimal_tmp
+        $scope.custom_hum_max = maximum_hum
+        $scope.custom_hum_min = minimal_hum
+
+
+        options_tmp = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
+        options_hum = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
+        $.plot($("#placeholder-custom-tmp"),
+          [{label: "Min", data: min_tmp}, {label: "Avg", data: avg_tmp}, {label: "Max", data: max_tmp}], options_tmp)
+        $.plot($("#placeholder-custom-hum"),
+          [{label: "Min", data: min_hum}, {label: "Avg", data: avg_hum}, {label: "Max", data: max_hum}], options_hum)
+
+      else
+        $('#data-custom').hide()
+        $('#data-custom-error').show()
+
+      $('.ajax-loader-custom').hide()
+    )
+
   $scope.update_station = () ->
     $scope.last_day_temp_avg = ""
     $scope.last_day_hum_avg = ""
@@ -110,34 +146,7 @@ calculate_tmps = (data) ->
         $("#date_from").val(val_previous)
         $("#date_to").val(val_today)
 
-        $http.get('./api/v1/weather_stations/' + $scope.weather_station + '/meteo_data_custom',
-          {params: {date_from: val_previous, date_to: val_today}}).success((data) ->
-          $scope.weather_station_data_custom = data
-
-          if data.length > 0
-            [minimal_tmp, tmp_avg, maximum_tmp, min_tmp, avg_tmp, max_tmp, minimal_hum, hum_avg, maximum_hum, min_hum, avg_hum, max_hum] = calculate_tmps(data)
-
-            $scope.custom_temp_avg = round_float(tmp_avg / data.length)
-            $scope.custom_hum_avg = round_float(hum_avg / data.length)
-            $scope.custom_temp_max = maximum_tmp
-            $scope.custom_temp_min = minimal_tmp
-            $scope.custom_hum_max = maximum_hum
-            $scope.custom_hum_min = minimal_hum
-
-
-            options_tmp = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
-            options_hum = {colors: [COLOR_MIN, COLOR_MED, COLOR_MAX], legend: {show: true, noColumns: 0}}
-            $.plot($("#placeholder-custom-tmp"),
-              [{label: "Min", data: min_tmp}, {label: "Avg", data: avg_tmp}, {label: "Max", data: max_tmp}], options_tmp)
-            $.plot($("#placeholder-custom-hum"),
-              [{label: "Min", data: min_hum}, {label: "Avg", data: avg_hum}, {label: "Max", data: max_hum}], options_hum)
-
-          else
-            $('#data-custom').hide()
-            $('#data-custom-error').show()
-
-          $('.ajax-loader-custom').hide()
-        )
+        $scope.update_custom()
       )
 
 
