@@ -48,7 +48,7 @@ class WeatherStation < ActiveRecord::Base
   def get_metadata_custom(date_from, date_to)
     if Rails.env.development?
       meteo_datums
-          .where('created_at BETWEEN ? AND ?', date_from, date_to)
+          .where('created_at BETWEEN ? AND ?', date_from, date_to.end_of_day)
           .group('temperature_in')
           .select('meteo_data.*, avg(temperature_in) as temperature_in_avg,
                                              max(temperature_in) as temperature_in_max,
@@ -60,7 +60,7 @@ class WeatherStation < ActiveRecord::Base
                                              count(*) as count')
     else
       meteo_datums
-          .where('created_at BETWEEN ? AND ?', date_from, date_to)
+          .where('created_at BETWEEN ? AND ?', date_from, date_to.end_of_day)
           .group('HOUR(created_at)')
           .select('meteo_data.*, avg(temperature_in) as temperature_in_avg,
                                              max(temperature_in) as temperature_in_max,

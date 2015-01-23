@@ -57,6 +57,7 @@ calculate_tmps = (data) ->
 @meteodino.controller 'HomeCtrl', ['$scope', '$location', '$http', ($scope, $location, $http) ->
   $scope.update_custom = () ->
     $('#data-custom-error').hide()
+    $('#data-custom').show()
     $('.ajax-loader-custom').show()
 
     val_previous = $("#date_from").val()
