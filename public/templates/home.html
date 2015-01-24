@@ -1,30 +1,32 @@
 <!-- public/templates/home.html -->
 
 <div class="row">
-    <p>
+    <div class="col-md-12">
         <label for="weather_station">Weather station:</label>
         <select id="weather_station" ng-model="weather_station" ng-change="update_station()">
             <option value="">-- Choose station --</option>
             <option ng-repeat="ws in weather_stations" value="{{ws.id}}">{{ws.name}}</option>
         </select>
-    </p>
+    </div>
 </div>
 
 <div id="weather_station_results">
     <div class="row">
-        <h1>Last day:</h1>
+        <div class="col-md-12">
+            <h1>Last day:</h1>
 
-        <p class="ajax-loader ajax-loader-last-day">
-            <img src="ajax-loader.gif"/>
-        </p>
+            <p class="ajax-loader ajax-loader-last-day">
+                <img src="ajax-loader.gif"/>
+            </p>
+        </div>
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <p style="font-weight: bold;">
-                Temperature => <span style="color: {{color_max}};">Max {{last_day_temp_max}}&#8451;</span> | <span
-                    style="color: {{color_avg}}">Avg {{last_day_temp_avg}}&#8451;</span> | <span
-                    style="color: {{color_min}}">
+                Temperature => <span class="color_max">Max {{last_day_temp_max}}&#8451;</span> | <span
+                    class="color_avg">Avg {{last_day_temp_avg}}&#8451;</span> | <span
+                    class="color_min">
                 Min {{last_day_temp_min}}&#8451;</span>
             </p>
 
@@ -32,11 +34,11 @@
             <div id="placeholder-last-day-tmp" class="graphs"></div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-5">
             <p style="font-weight: bold;">
-                Humidity => <span style="color: {{color_max}};">Max {{last_day_hum_max}}%</span> | <span
-                    style="color: {{color_avg}}">Avg {{last_day_hum_avg}}%</span> | <span
-                    style="color: {{color_min}}">
+                Humidity => <span class="color_max">Max {{last_day_hum_max}}%</span> | <span
+                    class="color_avg">Avg {{last_day_hum_avg}}%</span> | <span
+                    class="color_min">
                 Min {{last_day_hum_min}}%</span>
             </p>
 
@@ -50,11 +52,13 @@
     <br/>
 
     <div class="row">
-        <h1>Custom:</h1>
+        <div class="col-md-12">
+            <h1>Custom:</h1>
 
-        <p class="ajax-loader ajax-loader-custom">
-            <img src="ajax-loader.gif"/>
-        </p>
+            <p class="ajax-loader ajax-loader-custom">
+                <img src="ajax-loader.gif"/>
+            </p>
+        </div>
     </div>
 
     <div class="row">
@@ -77,20 +81,22 @@
     <br/>
 
     <div class="row">
-        <div id="data-custom-error" class="alert alert-danger" role="alert">
-            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            <span class="sr-only">Error:</span>
-            No meteo data between dates!
+        <div class="col-md-12">
+            <div id="data-custom-error" class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                No meteo data between dates!
+            </div>
         </div>
     </div>
 
     <div class="row">
         <div id="data-custom">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <p style="font-weight: bold;">
-                    Temperature => <span style="color: {{color_max}};">Max {{custom_temp_max}}&#8451;</span> | <span
-                        style="color: {{color_avg}}">Avg {{custom_temp_avg}}&#8451;</span> | <span
-                        style="color: {{color_min}}">
+                    Temperature => <span class="color_max">Max {{custom_temp_max}}&#8451;</span> | <span
+                        class="color_avg">Avg {{custom_temp_avg}}&#8451;</span> | <span
+                        class="color_min">
                     Min {{custom_temp_min}}&#8451;</span>
                 </p>
 
@@ -98,11 +104,11 @@
                 <div id="placeholder-custom-tmp" class="graphs"></div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <p style="font-weight: bold;">
-                    Humidity => <span style="color: {{color_max}};">Max {{custom_hum_max}}%</span> | <span
-                        style="color: {{color_avg}}">Avg {{custom_hum_avg}}%</span> | <span
-                        style="color: {{color_min}}">
+                    Humidity => <span class="color_max">Max {{custom_hum_max}}%</span> | <span
+                        class="color_avg">Avg {{custom_hum_avg}}%</span> | <span
+                        class="color_min">
                     Min {{custom_hum_min}}%</span>
                 </p>
 
