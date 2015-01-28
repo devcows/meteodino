@@ -1,14 +1,21 @@
 #include <EtherCard.h>
-#include <dht11.h>
+#include <dht22.h>
 #include <LiquidCrystal.h>
 
 LiquidCrystal lcd(4, 5, 6, 7, 8, 9);
 
 //DHT connection 
-//BUT TAKE CARE how to connect it : (Data, 5V, GND) when the bleu protection is in front of you.
+//BUT TAKE CARE how to connect it DHT11: (Data, 5V, GND) when the bleu protection is in front of you.
+//                                DHT22: (GND, Data, 5V)
 //Digital pin 2
-#define DHT11PIN 2
-dht11 DHT11;
+#define DHTPIN 2
+
+#define DHTTYPE DHT11   // DHT 11 
+//#define DHTTYPE DHT22   // DHT 22  (AM2302)
+//#define DHTTYPE DHT21   // DHT 21 (AM2301)
+
+DHT dht(DHTPIN, DHTTYPE);
+
 float humidity_in, temperature_in, dew_point_in;
 
 
@@ -99,11 +106,8 @@ void setup()
   lcd.setCursor(0,0);
   lcd.write("Begin setup:");  
   
-  Serial.println("DHT11 TEST PROGRAM ");
-  Serial.print("LIBRARY VERSION: ");
-  Serial.println(DHT11LIB_VERSION);
-  pinMode(DHT11PIN, INPUT);           // set pin to input
-  
+  pinMode(DHTPIN, INPUT);           // set pin to input
+  dht.begin();
   
   if (ether.begin(sizeof Ethernet::buffer, mymac, 10) == 0) {
     Serial.println(F("Failed to access Ethernet controller"));
@@ -181,38 +185,17 @@ static byte sendToAPI (float humidity, float temperature, float dew_point) {
 
 void readSensors(int retries){
   Serial.print("Read sensors: ");
-  int chk = DHT11.read(DHT11PIN);
-  switch (chk)
-  {
-    case DHTLIB_OK: 
-		Serial.println("OK"); 
-		break;
-    case DHTLIB_ERROR_CHECKSUM: 
-		Serial.println("Checksum error"); 
-                
-                if(retries > 0){
-                  readSensors(retries - 1);
-                }
-		break;
-    case DHTLIB_ERROR_TIMEOUT: 
-		Serial.println("Time out error"); 
-                
-                if(retries > 0){
-                  readSensors(retries - 1);
-                }
-		break;
-    default: 
-		Serial.println("Unknown error"); 
-                
-                if(retries > 0){
-                  readSensors(retries - 1);
-                }
-		break;
+    
+  humidity_in = dht.readHumidity();
+  temperature_in = dht.readTemperature();
+  
+  while(isnan(temperature_in) || isnan(humidity_in)) {
+    humidity_in = dht.readHumidity();
+    temperature_in = dht.readTemperature();    
   }
-
-  humidity_in = DHT11.humidity;
-  temperature_in = DHT11.temperature;
-  dew_point_in = dewPoint(DHT11.temperature, DHT11.humidity);
+  
+  dew_point_in = dewPoint(temperature_in, humidity_in);
+   
     
   Serial.print("Humidity (%): ");
   Serial.println(humidity_in, 2);
