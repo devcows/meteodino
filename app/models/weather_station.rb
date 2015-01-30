@@ -8,6 +8,10 @@
 #  created_at :datetime
 #  updated_at :datetime
 #
+# Indexes
+#
+#  index_weather_stations_on_token  (token)
+#
 
 class WeatherStation < ActiveRecord::Base
   attr_accessible :name, :token

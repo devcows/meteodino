@@ -10,6 +10,11 @@
 #  created_at         :datetime
 #  updated_at         :datetime
 #
+# Indexes
+#
+#  index_meteo_data_on_created_at          (created_at)
+#  index_meteo_data_on_weather_station_id  (weather_station_id)
+#
 
 require 'test_helper'
 

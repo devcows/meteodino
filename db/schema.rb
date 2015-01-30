@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141223084424) do
+ActiveRecord::Schema.define(version: 20150130174007) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -55,11 +55,16 @@ ActiveRecord::Schema.define(version: 20141223084424) do
     t.datetime "updated_at"
   end
 
+  add_index "meteo_data", ["created_at"], name: "index_meteo_data_on_created_at", using: :btree
+  add_index "meteo_data", ["weather_station_id"], name: "index_meteo_data_on_weather_station_id", using: :btree
+
   create_table "weather_stations", force: true do |t|
     t.string   "name"
     t.string   "token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "weather_stations", ["token"], name: "index_weather_stations_on_token", using: :btree
 
 end

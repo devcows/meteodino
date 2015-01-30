@@ -189,7 +189,10 @@ void readSensors(int retries){
   humidity_in = dht.readHumidity();
   temperature_in = dht.readTemperature();
   
-  while(isnan(temperature_in) || isnan(humidity_in)) {
+  while(isnan(temperature_in) || isnan(humidity_in) || temperature_in == 0 || 
+        humidity_in == 0 || humidity_in >= 100) {
+    
+    delay(200);
     humidity_in = dht.readHumidity();
     temperature_in = dht.readTemperature();    
   }

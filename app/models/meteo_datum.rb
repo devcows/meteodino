@@ -10,6 +10,11 @@
 #  created_at         :datetime
 #  updated_at         :datetime
 #
+# Indexes
+#
+#  index_meteo_data_on_created_at          (created_at)
+#  index_meteo_data_on_weather_station_id  (weather_station_id)
+#
 
 class MeteoDatum < ActiveRecord::Base
   attr_accessible :weather_station_id, :temperature_in, :humidity_in, :dew_point_in, :token
