@@ -1,5 +1,5 @@
 #include <EtherCard.h>
-#include <dht22.h>
+#include <dht11.h>
 #include <LiquidCrystal.h>
 
 LiquidCrystal lcd(4, 5, 6, 7, 8, 9);
@@ -14,7 +14,8 @@ LiquidCrystal lcd(4, 5, 6, 7, 8, 9);
 //#define DHTTYPE DHT22   // DHT 22  (AM2302)
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
 
-DHT dht(DHTPIN, DHTTYPE);
+//DHT dht(DHTPIN, DHTTYPE);
+dht11 DHT11;
 
 float humidity_in, temperature_in, dew_point_in;
 
@@ -41,6 +42,7 @@ unsigned long thisMillis = 0;
 unsigned long lastMillisSend = 0;
 unsigned long lastMillisLCD = 0;
 unsigned int defaultSensorsRetries = 3;
+int loop_main = 0;
 
 
 //Celsius to Fahrenheit conversion
@@ -107,7 +109,7 @@ void setup()
   lcd.write("Begin setup:");  
   
   pinMode(DHTPIN, INPUT);           // set pin to input
-  dht.begin();
+  //dht.begin();
   
   if (ether.begin(sizeof Ethernet::buffer, mymac, 10) == 0) {
     Serial.println(F("Failed to access Ethernet controller"));
@@ -148,10 +150,7 @@ static byte sendToAPI (float humidity, float temperature, float dew_point) {
   Serial.print("Temperature (°C): ");
   Serial.println(temperature, 2);
 
-  //Serial.print("Dew Point (°C): ");
-  //Serial.println(dewPoint(DHT11.temperature, DHT11.humidity));
-
-  Serial.print("Dew PointFast (°C): ");
+  Serial.print("Dew Point (°C): ");
   Serial.println(dew_point); 
   
   byte sd = stash.create();   
@@ -183,32 +182,62 @@ static byte sendToAPI (float humidity, float temperature, float dew_point) {
   return session;
 }
 
-void readSensors(int retries){
-  Serial.print("Read sensors: ");
-    
-  humidity_in = dht.readHumidity();
-  temperature_in = dht.readTemperature();
+float readTemperatureSensor(){  
+  float value = 0;
   
-  while(isnan(temperature_in) || isnan(humidity_in) || temperature_in == 0 || 
-        humidity_in == 0 || humidity_in >= 100) {
-    
-    delay(200);
-    humidity_in = dht.readHumidity();
-    temperature_in = dht.readTemperature();    
+  delay(200);
+  int chk = DHT11.read(DHTPIN);
+  value = DHT11.temperature;
+  //value = dht.readTemperature(); 
+  
+  Serial.print("Read sensor temperature (°C): ");
+  Serial.println(value, 2);  
+  
+  if(isnan(value)){
+    value = readTemperatureSensor();  
   }
   
-  dew_point_in = dewPoint(temperature_in, humidity_in);
-   
-    
-  Serial.print("Humidity (%): ");
-  Serial.println(humidity_in, 2);
+  if(value == 0){
+    value = readTemperatureSensor();  
+  }
+  
+  return value;
+}
 
-  Serial.print("Temperature (°C): ");
-  Serial.println(temperature_in, 2);
+float readHumiditySensor(){  
+  float value = 0;
+  
+  delay(200);
+  int chk = DHT11.read(DHTPIN);
+  value = DHT11.humidity;
+  //value = dht.readHumidity(); 
+  
+  Serial.print("Read sensor Humidity (%): ");
+  Serial.println(value, 2);
+  
+  if(isnan(value)){
+    value = readHumiditySensor();  
+  }
+  
+  if(value == 0 || value >= 100){
+    value = readHumiditySensor();  
+  }
+  
+  return value;
+}
+
+void readSensors(int retries){
+  Serial.println("Read sensors: ");
+    
+  humidity_in = readHumiditySensor();
+  temperature_in = readTemperatureSensor();   
+  
+  dew_point_in = dewPoint(temperature_in, humidity_in);       
 
   Serial.print("Dew Point (°C): ");
   Serial.println(dew_point_in);
 }
+
 
 void writeLCD(float humidity, float temperature, float dew_point){
   lcd.clear();
@@ -219,12 +248,17 @@ void writeLCD(float humidity, float temperature, float dew_point){
   lcd.print(humidity,1);
   lcd.setCursor(0,1);
   lcd.write("Dew_point:");
-  lcd.print(dew_point,1);   
+  lcd.print(dew_point,1);
+  lcd.print(" ");
+  lcd.print(loop_main);  
 }
 
 
 void loop()
 {
+  loop_main += 1;
+  loop_main %= 100;
+  
   word len = ether.packetReceive();
   word pos = ether.packetLoop(len);
 
