@@ -34,4 +34,7 @@ class MeteoDatum < ActiveRecord::Base
     end
   end
 
+  def str_created_at
+    Utils.parse_data(created_at)
+  end
 end

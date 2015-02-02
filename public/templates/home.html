@@ -2,6 +2,34 @@
 
 <div class="row">
     <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tr class="active">
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Created at</th>
+                    <th>Total meteo data</th>
+                    <th>Last meteo datum</th>
+                </tr>
+
+                <tr ng-repeat="ws in weather_stations">
+                    <td>{{ws.id}}</td>
+                    <td>{{ws.name}}</td>
+                    <td>{{ws.str_created_at}}</td>
+                    <td>{{ws.total_meteo_data}}</td>
+                    <td>Tmp:{{ws.last_meteo_datum.temperature_in}} | Hum:{{ws.last_meteo_datum.humidity_in}} |
+                        Date:{{ws.last_meteo_datum.str_created_at}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<br/>
+
+<div class="row">
+    <div class="col-md-12">
         <label for="weather_station">Weather station:</label>
         <select id="weather_station" ng-model="weather_station" ng-change="update_station()">
             <option value="">-- Choose station --</option>

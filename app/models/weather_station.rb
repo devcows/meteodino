@@ -21,6 +21,9 @@ class WeatherStation < ActiveRecord::Base
   validates :name, presence: true
   validates :token, presence: true
 
+  def last_meteo_datum
+    meteo_datums.order(:created_at).last
+  end
 
   def get_metadata_last_day
     if Rails.env.development?
@@ -77,4 +80,7 @@ class WeatherStation < ActiveRecord::Base
     end
   end
 
+  def str_created_at
+    Utils.parse_data(created_at)
+  end
 end
